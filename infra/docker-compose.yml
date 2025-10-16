@@ -1,6 +1,6 @@
 ﻿services:
   db:
-    image: postgres:16-alpine
+    image: clarus/postgres:16-alpine
     container_name: infra-db-1
     environment:
       - POSTGRES_USER=postgres
@@ -17,17 +17,19 @@
       retries: 30
 
   api:
+    # mantém o build para gerar a imagem a partir do código
     build:
       context: ../apps/api
       dockerfile: Dockerfile
-    image: infra-api
+    # nomeia a imagem construída como clarus/api:latest
+    image: clarus/api:${APP_VERSION:-latest}
     container_name: infra-api-1
     environment:
-      # URLs completas (vÃ¡rios projetos checam nomes diferentes):
+      # URLs completas:
       - DATABASE_URL=postgresql+psycopg://postgres:postgres@db:5432/clarus
       - DB_URL=postgresql+psycopg://postgres:postgres@db:5432/clarus
       - SQLALCHEMY_DATABASE_URI=postgresql+psycopg://postgres:postgres@db:5432/clarus
-      # Campos separados (se o app montar a URL por partes):
+      # Partes (se o app montar a URL):
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=clarus
@@ -43,7 +45,7 @@
     build:
       context: ../apps/web
       dockerfile: Dockerfile
-    image: infra-web
+    image: clarus/web:${APP_VERSION:-latest}
     container_name: infra-web-1
     depends_on:
       - api
@@ -51,11 +53,10 @@
       - "5173:80"
 
   chroma:
-    image: chromadb/chroma:0.5.4
+    image: clarus/chroma:0.5.4
     container_name: infra-chroma-1
     ports:
       - "8001:8000"
 
 volumes:
   dbdata:
-
