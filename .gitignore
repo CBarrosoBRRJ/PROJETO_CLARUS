@@ -27,7 +27,7 @@ docker-compose*.yml
 coverage/
 htmlcov/
 pytest_cache/
-.ds_store
+.DS_Store
 
 # ---- IDE / SO ----
 .vscode/
