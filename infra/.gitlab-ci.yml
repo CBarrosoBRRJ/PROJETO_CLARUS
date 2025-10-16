@@ -1,0 +1,27 @@
+﻿stages: [lint, build, test, deploy]
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+lint:
+  stage: lint
+  script:
+    - echo 'Lint placeholder (ESLint/ruff entrarão nas próximas fases).'
+
+build:
+  stage: build
+  script:
+    - echo 'Build API/Web containers'
+    - docker build -t clarus-api ./apps/api
+    - docker build -t clarus-web ./apps/web
+
+test:
+  stage: test
+  script:
+    - echo 'Test placeholder (pytest/vitest).'
+
+deploy:
+  stage: deploy
+  script:
+    - echo 'Deploy placeholders (Railway/Vercel) — próximo passo.'
+  when: manual

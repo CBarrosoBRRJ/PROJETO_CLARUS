@@ -1,0 +1,21 @@
+.gsi-material-button {
+  -webkit-appearance: none;
+  background: #fff;
+  border:1px solid #747775; border-radius: 10px;
+  box-sizing: border-box;
+  color:#1f1f1f; cursor:pointer;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size:14px; letter-spacing:.25px;
+  height:44px; width:100%; /* ocupa toda a largura do formulário */
+  padding:0 12px; display:inline-flex; align-items:center; justify-content:center;
+  transition: background-color .218s, border-color .218s, box-shadow .218s;
+}
+.gsi-material-button .gsi-material-button-content-wrapper{display:flex; align-items:center; gap:10px}
+.gsi-material-button .gsi-material-button-icon{width:20px; height:20px}
+.gsi-material-button:not(:disabled):hover{
+  box-shadow:0 1px 2px rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
+}
+.gsi-material-button:not(:disabled):active .gsi-material-button-state,
+.gsi-material-button:not(:disabled):focus .gsi-material-button-state{opacity:.12; background:#303030}
+.gsi-divider {display:flex; align-items:center; gap:.75rem; color:#9aa4b2; font-size:.75rem}
+.gsi-divider::before,.gsi-divider::after{content:""; flex:1; height:1px; background:#e5e7eb}

@@ -1,0 +1,61 @@
+﻿services:
+  db:
+    image: postgres:16-alpine
+    container_name: infra-db-1
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=clarus
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U postgres -d clarus"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  api:
+    build:
+      context: ../apps/api
+      dockerfile: Dockerfile
+    image: infra-api
+    container_name: infra-api-1
+    environment:
+      # URLs completas (vÃ¡rios projetos checam nomes diferentes):
+      - DATABASE_URL=postgresql+psycopg://postgres:postgres@db:5432/clarus
+      - DB_URL=postgresql+psycopg://postgres:postgres@db:5432/clarus
+      - SQLALCHEMY_DATABASE_URI=postgresql+psycopg://postgres:postgres@db:5432/clarus
+      # Campos separados (se o app montar a URL por partes):
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=clarus
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  web:
+    build:
+      context: ../apps/web
+      dockerfile: Dockerfile
+    image: infra-web
+    container_name: infra-web-1
+    depends_on:
+      - api
+    ports:
+      - "5173:80"
+
+  chroma:
+    image: chromadb/chroma:0.5.4
+    container_name: infra-chroma-1
+    ports:
+      - "8001:8000"
+
+volumes:
+  dbdata:
+

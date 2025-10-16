@@ -1,0 +1,117 @@
+﻿/* =======================================================================
+   Clarus / Login page styles
+   Arquivo: src/styles/login.css
+   Objetivo: concentrar estilos específicos desta página (flip, layout fino,
+   animações e pequenos ajustes visuais). Mantemos Tailwind como base.
+   ======================================================================= */
+
+/* --- Flip (3D) -------------------------------------------------------- */
+.clarus-scene {
+  position: relative;
+  width: 100%;
+  min-height: 500px;            /* altura confortável para frente/verso */
+  transform-style: preserve-3d;
+  transition: transform .6s ease;
+  transform: rotateY(var(--base-rot, 0deg));
+  will-change: transform;
+  perspective: 1300px;          /* define o “profundidade” do flip */
+}
+
+.clarus-face, .clarus-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.clarus-back {
+  transform: rotateY(180deg);
+}
+
+/* Spin controlado (quando alterna verso A -> verso B sem “acumular”) */
+@keyframes clarus-spinY {
+  from { transform: rotateY(calc(var(--base-rot, 0deg))); }
+  to   { transform: rotateY(calc(var(--base-rot, 0deg) + 360deg)); }
+}
+.clarus-spinY { animation: clarus-spinY .6s ease; }
+
+/* --- Layout fino ------------------------------------------------------ */
+.clarus-card {
+  border-radius: 1rem;           /* ~ rounded-2xl */
+  background: #fff;
+  padding: 1.5rem;               /* p-6 */
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
+  outline: 1px solid rgba(0,0,0,.05);
+}
+
+/* Botão-ícone do olho — deixa hit-area confortável e ícone alinhado */
+.clarus-eye-btn {
+  position: absolute;
+  inset-block: 0;
+  right: .25rem;
+  padding-inline: .5rem;
+  display: inline-flex;
+  align-items: center;
+  color: rgb(100 116 139);        /* slate-500 */
+}
+.clarus-eye-btn:hover { color: rgb(51 65 85); } /* slate-700 */
+
+/* Par de CTAs (Solicitar/Ativar) lado a lado com tipografia discreta */
+.clarus-cta-title {
+  color: rgb(79 70 229);          /* indigo-600 */
+  font-weight: 600;
+}
+.clarus-cta-title:hover { text-decoration: underline; }
+.clarus-cta-desc {
+  margin-top: .25rem;
+  font-size: .75rem;              /* text-xs */
+  color: rgb(100 116 139);        /* slate-500 */
+}
+
+/* Centraliza o card principal verticalmente no seu grid direito */
+.clarus-right-col {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;        /* centraliza verticalmente */
+  padding: 2rem;                  /* p-8 */
+}
+
+/* Ajusta divisor “ou” do Google para ficar limpo em qualquer tema */
+.clarus-or {
+  position: relative;
+  margin-block: 1.25rem;
+}
+.clarus-or::before {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto 0;
+  height: 1px;
+  background: #e5e7eb;           /* slate-200 */
+  transform: translateY(-50%);
+}
+.clarus-or > span {
+  position: relative;
+  display: inline-block;
+  padding: 0 .75rem;
+  background: #fff;
+  font-size: .75rem;
+  color: rgb(100 116 139);
+}
+
+/* Google Material button (caso não esteja vindo por folha global) */
+.gsi-material-button .gsi-material-button-icon svg {
+  height: 18px; width: 18px;
+}
+/* --- Fix: centralizar o rótulo "ou" abaixo do botão Entrar --- */
+.clarus-or { text-align: center; }
+
+/* Card com altura mínima para não "pular" ao trocar de formulário */
+.login-card-fixed { min-height: 520px; }
+
+/* (mantém o resto do teu CSS como já está) */
+
+/* Card com altura mínima para não "pular" ao trocar de formulário */
+.login-card-fixed { min-height: 520px; }
+
+/* (mantém o resto do teu CSS como já está) */
