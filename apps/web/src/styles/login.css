@@ -1,117 +1,126 @@
 ﻿/* =======================================================================
    Clarus / Login page styles
-   Arquivo: src/styles/login.css
-   Objetivo: concentrar estilos específicos desta página (flip, layout fino,
-   animações e pequenos ajustes visuais). Mantemos Tailwind como base.
    ======================================================================= */
 
-/* --- Flip (3D) -------------------------------------------------------- */
-.clarus-scene {
-  position: relative;
-  width: 100%;
-  min-height: 500px;            /* altura confortável para frente/verso */
-  transform-style: preserve-3d;
-  transition: transform .6s ease;
-  transform: rotateY(var(--base-rot, 0deg));
-  will-change: transform;
-  perspective: 1300px;          /* define o “profundidade” do flip */
-}
-
-.clarus-face, .clarus-back {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.clarus-back {
-  transform: rotateY(180deg);
-}
-
-/* Spin controlado (quando alterna verso A -> verso B sem “acumular”) */
-@keyframes clarus-spinY {
-  from { transform: rotateY(calc(var(--base-rot, 0deg))); }
-  to   { transform: rotateY(calc(var(--base-rot, 0deg) + 360deg)); }
-}
-.clarus-spinY { animation: clarus-spinY .6s ease; }
-
-/* --- Layout fino ------------------------------------------------------ */
+/* ===== EFEITO “CARTEADO” (estilo macOS) =============================== */
 .clarus-card {
-  border-radius: 1rem;           /* ~ rounded-2xl */
+  border-radius: 1rem;
   background: #fff;
-  padding: 1.5rem;               /* p-6 */
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
+  padding: 1.5rem;
   outline: 1px solid rgba(0,0,0,.05);
+  /* sombra base bem suave */
+  box-shadow: 0 10px 15px -12px rgba(0,0,0,.35), 0 4px 10px -8px rgba(0,0,0,.38);
+  transform-origin: 50% 55%; /* ligeiramente abaixo do centro, sensação de “peso” */
+  will-change: transform, filter, box-shadow, opacity;
 }
 
-/* Botão-ícone do olho — deixa hit-area confortável e ícone alinhado */
+/* keyframes com “lift + settle” (zoom leve, elevação e volta macio) */
+@keyframes clarus-deal-kf {
+  0% {
+    transform: translateY(10px) scale(0.992);
+    opacity: 0;
+    filter: saturate(0.98) blur(0.6px);
+    box-shadow: 0 10px 15px -12px rgba(0,0,0,.12), 0 4px 10px -8px rgba(0,0,0,.06);
+  }
+  55% {
+    transform: translateY(-6px) scale(1.008);
+    opacity: 1;
+    filter: saturate(1.03) blur(0px);
+    box-shadow: 0 28px 70px -24px rgba(0,0,0,.35), 0 16px 32px -18px rgba(0,0,0,.22);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: saturate(1) blur(0);
+    box-shadow: 0 18px 40px -22px rgba(0,0,0,.22), 0 10px 22px -16px rgba(0,0,0,.14);
+  }
+}
+
+/* aplique esta classe quando trocar de formulário */
+.clarus-deal {
+  animation: clarus-deal-kf .38s cubic-bezier(.22,.65,.28,1);
+}
+
+/* acessibilidade: respeita “reduce motion” */
+@media (prefers-reduced-motion: reduce) {
+  .clarus-deal { animation: none; }
+}
+
+/* ===== LAYOUT ======================================================== */
+.clarus-right-col { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 2rem; }
+
+.login-card-fixed { min-height: 520px; }
+
+/* Olho (mostrar senha) */
 .clarus-eye-btn {
-  position: absolute;
-  inset-block: 0;
-  right: .25rem;
-  padding-inline: .5rem;
-  display: inline-flex;
-  align-items: center;
-  color: rgb(100 116 139);        /* slate-500 */
+  position: absolute; inset-block: 0; right: .25rem; padding-inline: .5rem;
+  display: inline-flex; align-items: center; color: rgb(100 116 139);
 }
-.clarus-eye-btn:hover { color: rgb(51 65 85); } /* slate-700 */
+.clarus-eye-btn:hover { color: rgb(51 65 85); }
 
-/* Par de CTAs (Solicitar/Ativar) lado a lado com tipografia discreta */
-.clarus-cta-title {
-  color: rgb(79 70 229);          /* indigo-600 */
-  font-weight: 600;
-}
+/* CTAs abaixo */
+.clarus-cta-title { color: rgb(79 70 229); font-weight: 600; }
 .clarus-cta-title:hover { text-decoration: underline; }
-.clarus-cta-desc {
-  margin-top: .25rem;
-  font-size: .75rem;              /* text-xs */
-  color: rgb(100 116 139);        /* slate-500 */
+.clarus-cta-desc { margin-top: .25rem; font-size: .75rem; color: rgb(100 116 139); }
+
+/* Divisor "ou" */
+.clarus-or { position: relative; margin-block: 1.25rem; text-align: center; }
+.clarus-or::before { content:""; position:absolute; inset:50% 0 auto 0; height:1px; background:#e5e7eb; transform:translateY(-50%); }
+.clarus-or > span { position:relative; display:inline-block; padding:0 .75rem; background:#fff; font-size:.75rem; color:rgb(100 116 139); }
+
+/* ===== FLOATING LABELS (inputs/textarea) ============================ */
+.fl-group { position: relative; }
+.fl-input {
+  width: 100%;
+  border: 1px solid #e5e7eb; border-radius: .5rem;
+  padding: .625rem .75rem; font-size: .875rem; line-height: 1.25rem;
+  background: #fff; outline: none;
+}
+.fl-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.12); }
+.fl-textarea { resize: vertical; min-height: 120px; padding-block: .75rem; }
+
+.fl-label {
+  position: absolute; left: .65rem; top: .6rem;
+  padding: 0 .25rem; font-size: .875rem; color: rgb(100 116 139);
+  pointer-events: none; background: #fff; transition: transform .14s ease, color .14s ease, font-size .14s ease, top .14s ease;
 }
 
-/* Centraliza o card principal verticalmente no seu grid direito */
-.clarus-right-col {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;        /* centraliza verticalmente */
-  padding: 2rem;                  /* p-8 */
+/* quando input tem foco ou valor, o label “sobe” */
+.fl-input:not(:placeholder-shown) + .fl-label,
+.fl-input:focus + .fl-label {
+  top: -0.5rem; font-size: .70rem; color: #6366f1; transform: translateY(-2px);
 }
 
-/* Ajusta divisor “ou” do Google para ficar limpo em qualquer tema */
-.clarus-or {
-  position: relative;
-  margin-block: 1.25rem;
+/* ===== MODAIS (estilo macOS) ======================================== */
+.modal-backdrop { background: rgba(0,0,0,.30); backdrop-filter: blur(2px); animation: modal-fade-in .18s ease; }
+.modal-panel {
+  background: #fff; border-radius: 1rem; padding: 1.5rem;
+  box-shadow: 0 25px 70px -20px rgba(0,0,0,.4), 0 10px 25px -10px rgba(0,0,0,.2);
+  outline: 1px solid rgba(0,0,0,.05); animation: modal-pop-in .22s cubic-bezier(.2,.7,.2,1);
 }
-.clarus-or::before {
-  content: "";
-  position: absolute;
-  inset: 50% 0 auto 0;
-  height: 1px;
-  background: #e5e7eb;           /* slate-200 */
-  transform: translateY(-50%);
-}
-.clarus-or > span {
+@keyframes modal-fade-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes modal-pop-in { from { transform: translate(-50%,-46%) scale(.985); opacity: 0; filter: blur(1px); } to { transform: translate(-50%,-50%) scale(1); opacity: 1; filter: none; } }
+
+/* ===== Botão “Staff Clarus” (elegante) ============================== */
+.btn-staff {
   position: relative;
-  display: inline-block;
-  padding: 0 .75rem;
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  width: 100%;
+  padding: .625rem 1rem;
+  border-radius: .75rem;
   background: #fff;
-  font-size: .75rem;
-  color: rgb(100 116 139);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 0 rgba(0,0,0,.02);
+  font-size: .875rem;
+  transition: transform .08s ease, background .12s ease, box-shadow .12s ease, border-color .12s ease;
 }
+.btn-staff:hover { background: #f8fafc; border-color: #dbe2ea; box-shadow: 0 6px 18px -10px rgba(2,6,23,.2); }
+.btn-staff:active { transform: translateY(1px); }
 
-/* Google Material button (caso não esteja vindo por folha global) */
-.gsi-material-button .gsi-material-button-icon svg {
-  height: 18px; width: 18px;
+.btn-chip {
+  display:inline-flex; align-items:center; justify-content:center;
+  height: 1.55rem; width: 1.55rem; border-radius: .5rem;
+  background: linear-gradient(180deg,#e6f9fb,#d1f0f3);
+  box-shadow: inset 0 0 0 1px rgba(32,178,170,.25);
 }
-/* --- Fix: centralizar o rótulo "ou" abaixo do botão Entrar --- */
-.clarus-or { text-align: center; }
-
-/* Card com altura mínima para não "pular" ao trocar de formulário */
-.login-card-fixed { min-height: 520px; }
-
-/* (mantém o resto do teu CSS como já está) */
-
-/* Card com altura mínima para não "pular" ao trocar de formulário */
-.login-card-fixed { min-height: 520px; }
-
-/* (mantém o resto do teu CSS como já está) */
+.btn-chip img { width: 1rem; height: 1rem; display:block; }
